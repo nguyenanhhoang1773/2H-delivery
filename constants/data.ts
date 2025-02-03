@@ -1,0 +1,97 @@
+import images from "./images";
+
+const foods = [
+  {
+    id: 1,
+    title: "Bánh xèo Nguyễn Hoàng",
+    type: "Ăn nhẹ",
+    source: images.banhXeo,
+    price: "15.000",
+    star: "4.6",
+    merchantSlug: "thuyhangbone",
+  },
+  {
+    id: 2,
+    title: "Cơm gà Gia Vĩnh",
+    type: "Cơm",
+    source: images.comGa,
+    price: "50.000",
+    star: "4.8",
+    merchantSlug: "giavinhgl",
+  },
+  {
+    id: 3,
+    title: "Trà sữa OLong đậm vị",
+    type: "Đồ uống",
+    source: images.traSuaOlong,
+    price: "29.000",
+    star: "4.7",
+    merchantSlug: "trasuabong",
+  },
+  {
+    id: 4,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+];
+export const merchants = [
+  {
+    id: 4,
+    title: "Bún riêu ngon - cô Hưng",
+    source: images.bunRieu,
+    star: "4.5 ",
+    merchantSlug: "bunrieucohung",
+    foods: [
+      {
+        id: 1,
+        title: "Bánh xèo đặc biệt",
+        type: "Ăn nhẹ",
+        source: images.banhXeo,
+        price: "20.000",
+        star: "4.3",
+        merchantSlug: "bunrieucohung",
+      },
+      {
+        id: 2,
+        title: "Bánh xèo tôm",
+        type: "Ăn nhẹ",
+        source: images.banhXeo,
+        price: "17.000",
+        star: "4.6",
+        merchantSlug: "bunrieucohung",
+      },
+      {
+        id: 3,
+        title: "Bánh xèo Nguyễn Hoàng",
+        type: "Ăn nhẹ",
+        source: images.banhXeo,
+        price: "15.000",
+        star: "4.6",
+        merchantSlug: "bunrieucohung",
+      },
+    ],
+  },
+  {
+    id: 5,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+  {
+    id: 6,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+];
+export default foods;
