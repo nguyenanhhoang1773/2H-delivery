@@ -10,12 +10,6 @@ import {
 } from "react-native";
 import { Link } from "expo-router";
 import { useUser, useClerk } from "@clerk/clerk-expo";
-import Toast from "react-native-toast-message";
-import MaterialIcon from "@expo/vector-icons/MaterialIcons";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import FontistoIcon from "@expo/vector-icons/Fontisto";
 import * as colors from "@/constants/color";
 import { StatusBar } from "expo-status-bar";
 import Swiper from "react-native-swiper";
@@ -29,7 +23,6 @@ import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 export default function Index() {
   const { user } = useUser();
-  const { signOut } = useClerk();
   console.log(user?.fullName);
 
   return (
@@ -50,9 +43,18 @@ export default function Index() {
             </TouchableOpacity>
           </View>
           <View className="mt-5 flex-row gap-2 items-center justify-center">
-            <ItemCate title="Cơm" source={images.comTam} />
-            <ItemCate title="Đồ ngọt" source={images.cheHat} />
-            <ItemCate title="Đồ uống" source={images.traSuaKhoaiMon} />
+            <ItemCate
+              title="Cơm"
+              source={images.comTam}
+            />
+            <ItemCate
+              title="Đồ ngọt"
+              source={images.cheHat}
+            />
+            <ItemCate
+              title="Đồ uống"
+              source={images.traSuaKhoaiMon}
+            />
             <ItemCate more />
           </View>
           <View className="flex-row justify-between items-center mt-16">

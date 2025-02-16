@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,9 +19,12 @@ import LottieView from "lottie-react-native";
 import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
-import { useOAuth, SignedOut } from "@clerk/clerk-expo";
+import { useOAuth, SignedOut, useUser } from "@clerk/clerk-expo";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
+import axios from "axios";
+import { useAppDispatch } from "@/redux/hooks";
+import { login } from "@/redux/features/user/userSlice";
 const schema = yup
   .object()
   .shape({
@@ -43,14 +46,59 @@ WebBrowser.maybeCompleteAuthSession();
 
 const LogIn = () => {
   useWarmUpBrowser();
+  console.log("mouted mouted mouted mouted mouted mouted mouted mouted");
+  const dispatch = useAppDispatch();
+  const { user: clerkUser } = useUser();
+  const [loading, setLoading] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  async function LoginWithClerk() {
+    try {
+      const response = await axios.post("http://192.168.110.238:3000/signUp", {
+        email: clerkUser?.emailAddresses[0].emailAddress,
+        password: 1,
+        fullname: clerkUser?.fullName,
+        phone: 1,
+      });
+      const { status } = response.data;
+      if (status === "success") {
+        const response = await axios.post("http://192.168.110.238:3000/login", {
+          email: clerkUser?.emailAddresses[0].emailAddress,
+          password: 1,
+        });
+        const { status, user }: { status: string; user: user } = response.data;
+        if (status === "success") {
+          console.log("success");
+          dispatch(
+            login({
+              fullname: user.fullname,
+              id: user.id,
+              phone: user.phone,
+              imgUrl: clerkUser?.imageUrl,
+            })
+          );
+        }
+      }
+      console.log("response.data:", response.data);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    if (clerkUser) {
+      LoginWithClerk();
+      console.log("login clerk run");
+    }
+  }, [clerkUser]);
   const onPress = React.useCallback(async () => {
+    console.log("----------------------------------------------------");
     try {
       const { createdSessionId, signIn, signUp, setActive } =
         await startOAuthFlow();
 
+      setLoading(true);
       if (createdSessionId) {
-        router.replace("/");
         setActive!({ session: createdSessionId });
         Toast.show({
           type: "success",
@@ -74,10 +122,33 @@ const LogIn = () => {
     },
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data: any) => console.log(data);
+  const onSubmit = (data: { email: string; password: string }) => {
+    async function LoginWithEmail() {
+      try {
+        const response = await axios.post("http://192.168.110.238:3000/login", {
+          email: data.email,
+          password: data.password,
+        });
+        const { status, user }: { status: string; user: user } = response.data;
+        if (status === "success") {
+          console.log("success");
+          dispatch(
+            login({ fullname: user.fullname, id: user.id, phone: user.phone })
+          );
+
+          router.replace("/");
+        }
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    LoginWithEmail();
+  };
   const handleLoginGoogle = () => {
     console.log(Math.random() * 10);
   };
+  if (loading) return;
   return (
     <View className="h-full flex-1 bg-backgroundPrimary">
       <StatusBar style="light" />
@@ -134,6 +205,7 @@ const LogIn = () => {
                   control={control}
                   rules={{
                     required: true,
+                    minLength: 6,
                     maxLength: 100,
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
@@ -153,8 +225,13 @@ const LogIn = () => {
                 </TouchableOpacity>
               </View>
               <View className="px-10 mt-2">
-                <TouchableOpacity className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center">
-                  <Text className="text-2xl font-NunitoSemiBold">Login</Text>
+                <TouchableOpacity
+                  onPress={handleSubmit(onSubmit)}
+                  className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center"
+                >
+                  <Text className="text-2xl font-NunitoSemiBold">
+                    Đăng nhập
+                  </Text>
                 </TouchableOpacity>
               </View>
               <View className="items-center">
@@ -166,19 +243,28 @@ const LogIn = () => {
                     onPress={onPress}
                     className="py-4 flex-1 rounded-2xl  border border-secondPrimary items-center justify-center"
                   >
-                    <Image source={images.google} className="size-8" />
+                    <Image
+                      source={images.google}
+                      className="size-8"
+                    />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleLoginGoogle}
                     className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
                   >
-                    <Image source={images.facebook} className="size-8" />
+                    <Image
+                      source={images.facebook}
+                      className="size-8"
+                    />
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={handleLoginGoogle}
                     className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
                   >
-                    <Image source={images.apple} className="size-8" />
+                    <Image
+                      source={images.apple}
+                      className="size-8"
+                    />
                   </TouchableOpacity>
                 </View>
                 <View className="items-center justify-center flex-row mt-10">

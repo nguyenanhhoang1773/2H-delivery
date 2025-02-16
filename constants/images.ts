@@ -32,11 +32,18 @@ import banhXeo from "@/assets/images/banhXeo.jpg";
 import bongThumbnail from "@/assets/images/bongThumbnail.jpg";
 import McDonaldThumbnail from "@/assets/images/McDonaldThumbnail.png";
 import kfcThumbnail from "@/assets/images/kfcThumbnail.jpg";
-
+import avatar from "@/assets/images/avatar.jpg";
+import location from "@/assets/images/location.png";
+import user from "@/assets/images/user.png";
+import shipper from "@/assets/images/shipper.png";
 export default {
+  user,
+  shipper,
+  location,
   google,
   facebook,
   apple,
+  avatar,
   bongThumbnail,
   McDonaldThumbnail,
   kfcThumbnail,

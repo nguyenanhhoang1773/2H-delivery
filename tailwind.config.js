@@ -15,6 +15,7 @@ module.exports = {
         textPrimary: "#7f8a92",
         textSecond: "#afbec9",
         shadow: "#e0dede",
+        lightPrimary: "#cbff02",
       },
       fontFamily: {
         Nunito: ["Nunito-Light"],

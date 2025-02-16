@@ -1,16 +1,19 @@
 import { View, Text } from "react-native";
-import React from "react";
-import { Redirect, Tabs } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Redirect, router, Tabs } from "expo-router";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import Fontisto from "@expo/vector-icons/Fontisto";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as colors from "@/constants/color";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { login, selectIsLogin } from "@/redux/features/user/userSlice";
+import axios from "axios";
 const RootLayout = () => {
-  const { isSignedIn } = useAuth();
-  if (!isSignedIn) return <Redirect href={"/(auth)/LogIn"} />;
+  const isLogin = useAppSelector(selectIsLogin);
+  console.log("isLogin from rootLayout:", isLogin);
+  if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;
   return (
     <Tabs
       screenOptions={{
@@ -25,7 +28,11 @@ const RootLayout = () => {
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons color={colors.primary} size={30} name="home" />
+              <Ionicons
+                color={colors.primary}
+                size={30}
+                name="home"
+              />
             ) : (
               <Ionicons
                 color={colors.textPrimary}
@@ -61,7 +68,11 @@ const RootLayout = () => {
         options={{
           tabBarIcon: ({ focused }) =>
             focused ? (
-              <Ionicons size={30} color={colors.primary} name="newspaper" />
+              <Ionicons
+                size={30}
+                color={colors.primary}
+                name="newspaper"
+              />
             ) : (
               <Ionicons
                 size={30}

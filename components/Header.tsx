@@ -20,9 +20,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { selectQuantity } from "@/redux/features/cart/cartSlice";
 import { router } from "expo-router";
+import { selectUser } from "@/redux/features/user/userSlice";
 const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
-  const { user } = useUser();
-  const { signOut } = useClerk();
+  const user = useAppSelector(selectUser);
   const quantityCart = useAppSelector(selectQuantity);
   if (isHome)
     return (
@@ -34,7 +34,7 @@ const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
           <View className="flex-row justify-between items-center">
             <View className="flex-row items-center">
               <Image
-                source={{ uri: user?.imageUrl }}
+                source={{ uri: user?.imgUrl! }}
                 className="size-10 rounded-full"
               />
               <View className="justify-center ml-2">
@@ -70,13 +70,21 @@ const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
             </View>
           </View>
           <View className="flex-row items-center  rounded-3xl bg-secondBg p-4 mt-4">
-            <Ionicons color={colors.textSecond} size={20} name="search" />
+            <Ionicons
+              color={colors.textSecond}
+              size={20}
+              name="search"
+            />
             <TextInput
               placeholderTextColor={colors.textSecond}
               placeholder="Tìm món ăn bạn muốn"
               className="text-white flex-1 text-xl ml-2  font-NunitoMedium"
             />
-            <FontAwesome6 color={colors.textSecond} size={20} name="sliders" />
+            <FontAwesome6
+              color={colors.textSecond}
+              size={20}
+              name="sliders"
+            />
           </View>
         </View>
       </SafeAreaView>
@@ -90,7 +98,7 @@ const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
         <View className="flex-row justify-between items-center">
           <View className="flex-row items-center">
             <Image
-              source={{ uri: user?.imageUrl }}
+              source={{ uri: user?.imgUrl! }}
               className="size-10 rounded-full"
             />
             <View className="justify-center ml-2">
@@ -115,7 +123,10 @@ const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
             ref={cartRef}
             className="flex-row items-center justify-center py-2 px-4 bg-primary rounded-xl z-50"
           >
-            <MaterialCommunityIcons size={24} name="cart-outline" />
+            <MaterialCommunityIcons
+              size={24}
+              name="cart-outline"
+            />
             <Text className="font-NunitoBold ml-1">{quantityCart}</Text>
           </TouchableOpacity>
         </View>
