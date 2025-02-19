@@ -20,6 +20,7 @@ import goiCuon from "@/assets/images/goiCuon.jpg";
 import huTieu from "@/assets/images/huTieu.jpg";
 import milo from "@/assets/images/milo.jpg";
 import phoKho from "@/assets/images/phoKho.jpg";
+import profile from "@/assets/images/profile.png";
 import sodaChanh from "@/assets/images/sodaChanh.jpg";
 import suaTuoiTranChau from "@/assets/images/suaTuoiTranChau.jpg";
 import toppingKhoaiMon from "@/assets/images/toppingKhoaiMon.jpg";
@@ -66,6 +67,7 @@ export default {
   huTieu,
   milo,
   phoKho,
+  profile,
   sodaChanh,
   suaTuoiTranChau,
   toppingKhoaiMon,
