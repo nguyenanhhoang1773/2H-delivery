@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -25,13 +27,18 @@ import { router } from "expo-router";
 import axios from "axios";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/redux/features/user/userSlice";
-const schema = yup
-  .object()
-  .shape({
-    email: yup.string().email().required(),
-    password: yup.string().required(),
-  })
-  .required();
+import { LoginWithClerk, LoginWithEmail } from "@/db/db";
+import { useApi } from "@/db/useApi";
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Đây không phải là email")
+    .required("Email không được bỏ trống"),
+  password: yup
+    .string()
+    .required("Mật khẩu không được bỏ trống")
+    .min(9, "Mật khẩu phải tối thiểu là 9 chữ số"),
+});
 
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
@@ -46,65 +53,62 @@ WebBrowser.maybeCompleteAuthSession();
 
 const LogIn = () => {
   useWarmUpBrowser();
-  console.log("mouted mouted mouted mouted mouted mouted mouted mouted");
   const dispatch = useAppDispatch();
   const { user: clerkUser } = useUser();
-  const [loading, setLoading] = useState(false);
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-  async function LoginWithClerk() {
-    try {
-      const response = await axios.post("http://192.168.110.238:3000/signUp", {
-        email: clerkUser?.emailAddresses[0].emailAddress,
-        password: 1,
-        fullname: clerkUser?.fullName,
-        phone: 1,
-      });
-      const { status } = response.data;
-      if (status === "success") {
-        const response = await axios.post("http://192.168.110.238:3000/login", {
-          email: clerkUser?.emailAddresses[0].emailAddress,
-          password: 1,
-        });
-        const { status, user }: { status: string; user: user } = response.data;
-        if (status === "success") {
-          console.log("success");
-          dispatch(
-            login({
-              fullname: user.fullname,
-              id: user.id,
-              phone: user.phone,
-              imgUrl: clerkUser?.imageUrl,
-            })
-          );
-        }
-      }
-      console.log("response.data:", response.data);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  }
-
+  const { fetchData, data } = useApi();
+  const [loading, setloading] = useState(false);
   useEffect(() => {
-    if (clerkUser) {
-      LoginWithClerk();
-      console.log("login clerk run");
-    }
-  }, [clerkUser]);
-  const onPress = React.useCallback(async () => {
-    console.log("----------------------------------------------------");
-    try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow();
-
-      setLoading(true);
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
+    const handleLogIn = async () => {
+      setloading(true);
+      if (clerkUser) {
+        await fetchData(LoginWithClerk(clerkUser));
+      }
+    };
+    handleLogIn();
+  }, [clerkUser, data]);
+  useEffect(() => {
+    if (data) {
+      console.log("imgUrl:", data.imgUrl);
+      if (clerkUser) {
+        dispatch(
+          login({
+            fullname: data?.fullname,
+            id: data?.id,
+            phone: data?.phone,
+            imgUrl: clerkUser?.imageUrl,
+          })
+        );
         Toast.show({
           type: "success",
           text1: "Welcome",
           text2: "Chúc mừng bạn đã đăng nhập thành công 👋",
         });
+      } else {
+        console.log("login with email");
+        dispatch(
+          login({
+            fullname: data?.fullname,
+            id: data?.id,
+            phone: data?.phone,
+          })
+        );
+        Toast.show({
+          type: "success",
+          text1: "Welcome",
+          text2: "Chúc mừng bạn đã đăng nhập thành công 👋",
+        });
+      }
+    }
+    setloading(false);
+  }, [data]);
+  const onPress = React.useCallback(async () => {
+    console.log("----------------------------------------------------");
+    try {
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow();
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
       } else {
       }
     } catch (err) {
@@ -122,164 +126,186 @@ const LogIn = () => {
     },
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data: { email: string; password: string }) => {
-    async function LoginWithEmail() {
-      try {
-        const response = await axios.post("http://192.168.110.238:3000/login", {
-          email: data.email,
-          password: data.password,
-        });
-        const { status, user }: { status: string; user: user } = response.data;
-        if (status === "success") {
-          console.log("success");
-          dispatch(
-            login({ fullname: user.fullname, id: user.id, phone: user.phone })
-          );
-
-          router.replace("/");
-        }
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    LoginWithEmail();
+  const onSubmit = async (user: { email: string; password: string }) => {
+    await fetchData(LoginWithEmail(user));
+  };
+  const onSubmitError = () => {
+    Alert.alert(
+      "Đăng nhập không thành công",
+      "Vui lòng kiểm tra lại thông tin"
+    );
   };
   const handleLoginGoogle = () => {
     console.log(Math.random() * 10);
   };
-  if (loading) return;
+  if (loading)
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <ActivityIndicator
+          color={colors.primary}
+          size={"large"}
+        />
+      </View>
+    );
   return (
-    <View className="h-full flex-1 bg-backgroundPrimary">
-      <StatusBar style="light" />
-      <ScrollView contentContainerClassName="flex-1 ">
-        <View className="h-[37%] justify-center items-center  bg-backgroundPrimary ">
-          <LottieView
-            style={{
-              width: "100%",
-              height: "90%",
-              marginTop: 25,
-            }}
-            source={require("@/assets/lottie/login.json")}
-            autoPlay
-            loop
-          />
-        </View>
-        <View className="bg-white rounded-xl h-[63%]">
-          <View className="px-7 mt-12">
-            <Text className="font-NunitoBold text-4xl">Đăng nhập</Text>
-            <View className="mt-6">
-              <View className="flex-row items-center py-4 border-b border-secondPrimary">
-                <MaterialIcon
-                  color={colors.textPrimary}
-                  size={20}
-                  name="alternate-email"
-                />
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholderTextColor={colors.textPrimary}
-                      className="ml-2 text-xl font-NunitoMedium"
-                      placeholder="Email"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="email"
-                />
-              </View>
-              {errors.email && <Text>This is required.</Text>}
-
-              <View className="flex-row  items-center mt-5 py-4 border-b border-secondPrimary">
-                <MaterialIcon
-                  color={colors.textPrimary}
-                  size={20}
-                  name="lock-outline"
-                />
-                <Controller
-                  control={control}
-                  rules={{
-                    required: true,
-                    minLength: 6,
-                    maxLength: 100,
-                  }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      placeholderTextColor={colors.textPrimary}
-                      className="ml-2 text-xl flex-1 font-NunitoMedium"
-                      placeholder="Password"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
-                    />
-                  )}
-                  name="password"
-                />
-                <TouchableOpacity>
-                  <Text className="font-NunitoBold text-xl ">Forgot?</Text>
-                </TouchableOpacity>
-              </View>
-              <View className="px-10 mt-2">
-                <TouchableOpacity
-                  onPress={handleSubmit(onSubmit)}
-                  className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center"
+    <SafeAreaView
+      className="flex-1 bg-backgroundPrimary "
+      edges={["bottom", "left", "right"]}
+    >
+      <View className=" flex-1 ">
+        <StatusBar style="light" />
+        <ScrollView contentContainerClassName="flex-1 ">
+          <View className="h-[37%] justify-center items-center  bg-backgroundPrimary ">
+            <LottieView
+              style={{
+                width: "100%",
+                height: "90%",
+                marginTop: 25,
+              }}
+              source={require("@/assets/lottie/login.json")}
+              autoPlay
+              loop
+            />
+          </View>
+          <View className="bg-white rounded-xl h-[63%]">
+            <View className=" mt-12">
+              <Text className="px-7 font-NunitoBold text-4xl">Đăng nhập</Text>
+              <View className="px-5 mt-6">
+                <View
+                  className={`flex-row ${
+                    errors.email && "bg-red-50"
+                  } px-2 rounded-3xl  items-center   border-b border-secondPrimary`}
                 >
-                  <Text className="text-2xl font-NunitoSemiBold">
-                    Đăng nhập
+                  <MaterialIcon
+                    color={errors.email ? "#ff6467" : colors.textPrimary}
+                    size={20}
+                    name="alternate-email"
+                  />
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        placeholderTextColor={colors.textPrimary}
+                        className="ml-2 text-2xl flex-1 py-4 font-NunitoMedium"
+                        placeholder="Email"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
+                    name="email"
+                  />
+                </View>
+                {errors.email && (
+                  <Text className="mt-2 text-red-400">
+                    {errors.email.message}
                   </Text>
-                </TouchableOpacity>
-              </View>
-              <View className="items-center">
-                <Text className="my-10 font-NunitoMedium text-textPrimary">
-                  Or, login with...
-                </Text>
-                <View className="flex-row items-center justify-center">
-                  <TouchableOpacity
-                    onPress={onPress}
-                    className="py-4 flex-1 rounded-2xl  border border-secondPrimary items-center justify-center"
-                  >
-                    <Image
-                      source={images.google}
-                      className="size-8"
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleLoginGoogle}
-                    className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
-                  >
-                    <Image
-                      source={images.facebook}
-                      className="size-8"
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={handleLoginGoogle}
-                    className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
-                  >
-                    <Image
-                      source={images.apple}
-                      className="size-8"
-                    />
+                )}
+
+                <View
+                  className={`flex-row ${
+                    errors.password && "bg-red-50"
+                  } px-2 rounded-3xl items-center mt-5 border-b border-secondPrimary`}
+                >
+                  <MaterialIcon
+                    color={errors.password ? "#ff6467" : colors.textPrimary}
+                    size={20}
+                    name="lock-outline"
+                  />
+                  <Controller
+                    control={control}
+                    rules={{
+                      required: true,
+                      minLength: 6,
+                      maxLength: 100,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        secureTextEntry
+                        placeholderTextColor={colors.textPrimary}
+                        className="ml-2 text-2xl flex-1 py-4 font-NunitoMedium"
+                        placeholder="Password"
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                      />
+                    )}
+                    name="password"
+                  />
+                  <TouchableOpacity>
+                    <Text className="font-NunitoBold text-xl ">Forgot?</Text>
                   </TouchableOpacity>
                 </View>
-                <View className="items-center justify-center flex-row mt-10">
-                  <Text className="font-NunitoMedium text-xl text-textPrimary">
-                    Bạn chưa có tài khoản?
+                {errors.password && (
+                  <Text className="mt-2 text-red-400">
+                    {errors.password.message}
                   </Text>
-                  <Text className="font-NunitoBold text-2xl ml-2">Đăng ký</Text>
-                  <SignedOut />
+                )}
+                <View className="px-10 mt-2">
+                  <TouchableOpacity
+                    onPress={handleSubmit(onSubmit, onSubmitError)}
+                    className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center"
+                  >
+                    <Text className="text-2xl font-NunitoSemiBold">
+                      Đăng nhập
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View className="items-center">
+                  <Text className="my-10 font-NunitoMedium text-textPrimary">
+                    Or, login with...
+                  </Text>
+                  <View className="flex-row items-center justify-center">
+                    <TouchableOpacity
+                      onPress={onPress}
+                      className="py-4 flex-1 rounded-2xl  border border-secondPrimary items-center justify-center"
+                    >
+                      <Image
+                        source={images.google}
+                        className="size-8"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleLoginGoogle}
+                      className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
+                    >
+                      <Image
+                        source={images.facebook}
+                        className="size-8"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleLoginGoogle}
+                      className="py-4 ml-5 rounded-2xl  flex-1 border border-secondPrimary items-center justify-center"
+                    >
+                      <Image
+                        source={images.apple}
+                        className="size-8"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <View className="items-center justify-center flex-row mt-10">
+                    <Text className="font-NunitoMedium text-xl text-textPrimary">
+                      Bạn chưa có tài khoản?
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => router.push("/(auth)/sign-up")}
+                      className=" ml-2"
+                    >
+                      <Text className="font-NunitoBold text-2xl">Đăng ký</Text>
+                    </TouchableOpacity>
+                    <SignedOut />
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
-    </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 };
 

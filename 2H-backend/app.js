@@ -1,7 +1,9 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const mysql = require("mysql");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const bcrypt = require("bcrypt");
 const app = express();
 const port = 3000;
 app.use(cors());
@@ -20,24 +22,40 @@ db.connect((err) => {
   }
   console.log("✅ Kết nối MySQL thành công!");
 });
+async function hashPassword(password) {
+  console.log("password: ", password);
+  const hashedPassword = await bcrypt.hash(password, 10);
+  return hashedPassword;
+}
 
-app.post("/login", (req, res) => {
+async function checkPassword(inputPassword, hashedPassword) {
+  return await bcrypt.compare(inputPassword, hashedPassword);
+}
+app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
   db.query(
-    "SELECT * FROM users WHERE email = ? AND password = ? ",
-    [email, password],
-    (err, rows, fields) => {
+    "SELECT * FROM users WHERE email = ? ",
+    [email],
+    async (err, rows, fields) => {
       if (err) throw err;
-      console.log("users list: ", rows);
+      console.log("rows[0]:", rows[0]);
       if (rows[0]) {
-        res.send({
-          status: "success",
-          user: rows[0],
-        });
+        const isMatch = await checkPassword(password, rows[0].password);
+        if (isMatch) {
+          res.send({
+            status: "success",
+            user: rows[0],
+          });
+        } else {
+          console.log("sai mat khau");
+          res.send({
+            status: "incorrectPassword",
+            user: null,
+          });
+        }
       } else {
         res.send({
-          status: "fail",
+          status: "nonExists",
           user: null,
         });
       }
@@ -45,26 +63,32 @@ app.post("/login", (req, res) => {
   );
 });
 
-app.post("/signUp", (req, res) => {
+app.post("/signUp", async (req, res) => {
   const { email, password, fullname, phone } = req.body;
-  console.log(req.body);
+  const hashedPassword = await hashPassword(password);
   db.query(
     "SELECT * FROM users WHERE email = ?",
     [email],
     (err, rows, fields) => {
       if (err) throw err;
-      if (!rows[0]) {
+      if (!rows[0] || password === "1") {
+        const userId = uuidv4();
         db.query(
-          "INSERT INTO users (email, password, fullname, phone) VALUES (?,?,?,?)",
-          [email, password, fullname, phone],
+          "INSERT INTO users (id,email, password, fullname, phone) VALUES (?,?,?,?,?)",
+          [userId, email, hashedPassword, fullname, phone],
           (err, rows, fields) => {
             if (err) throw err;
+            res.send({
+              status: "success",
+            });
           }
         );
+      } else {
+        console.log("email exists");
+        res.send({
+          status: "exists",
+        });
       }
-      res.send({
-        status: "success",
-      });
     }
   );
 });

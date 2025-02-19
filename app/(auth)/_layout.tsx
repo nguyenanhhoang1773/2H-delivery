@@ -4,7 +4,6 @@ import { useAppSelector } from "@/redux/hooks";
 import { selectIsLogin } from "@/redux/features/user/userSlice";
 export default function AuthLayout() {
   const isLogin = useAppSelector(selectIsLogin);
-  console.log("isLogin from authLayout:", isLogin);
   if (isLogin) return <Redirect href={"/"} />;
   return <Slot />;
 }
