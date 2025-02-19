@@ -5,7 +5,7 @@ import type { RootState } from "@/redux/store";
 interface UserState {
   id: number | null;
   fullname: string | null;
-  imgUrl?: string | null;
+  imgUrl?: string;
   isLogin?: boolean;
   phone: number | null;
 }
@@ -34,7 +34,8 @@ export const userSlice = createSlice({
     logout: (state) => {
       state.isLogin = false;
       state.fullname = null;
-      state.imgUrl = null;
+      state.imgUrl =
+        "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg";
       state.id = null;
       state.phone = null;
     },

@@ -10,13 +10,16 @@ import * as colors from "@/constants/color";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { ScrollView } from "react-native-gesture-handler";
 const ProfilePage = () => {
-  const { signOut } = useClerk();
-  const dispatch = useAppDispatch();
-  const handleLogOut = async () => {
-    console.log("------------------------------");
-    await signOut();
-    dispatch(logout());
-  };
+  // const { signOut } = useClerk();
+  // const dispatch = useAppDispatch();
+  // const user = useAppSelector(selectUser);
+  // console.log(user.fullname);
+  // console.log(user.imgUrl);
+  // const handleLogOut = async () => {
+  //   console.log("------------------------------");
+  //   await signOut();
+  //   dispatch(logout());
+  // };
 
   const [pushNotifications, setPushNotifications] = React.useState(true);
 

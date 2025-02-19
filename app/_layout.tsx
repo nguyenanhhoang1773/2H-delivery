@@ -18,7 +18,6 @@ import store from "@/redux/store";
 import { PortalProvider } from "@gorhom/portal";
 export default function RootLayout() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
-
   if (!publishableKey) {
     throw new Error("Add EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY to your .env file");
   }
@@ -38,7 +37,10 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+      <ClerkProvider
+        tokenCache={tokenCache}
+        publishableKey={publishableKey}
+      >
         <ClerkLoaded>
           <PortalProvider>
             <GestureHandlerRootView style={styles.container}>
