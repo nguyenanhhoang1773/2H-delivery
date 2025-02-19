@@ -28,6 +28,7 @@ import axios from "axios";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/redux/features/user/userSlice";
 import { LoginWithClerk, LoginWithEmail } from "@/db/db";
+import { useClerk } from "@clerk/clerk-expo";
 import { useApi } from "@/db/useApi";
 const schema = yup.object().shape({
   email: yup
@@ -54,6 +55,7 @@ WebBrowser.maybeCompleteAuthSession();
 const LogIn = () => {
   useWarmUpBrowser();
   const dispatch = useAppDispatch();
+  const { signOut } = useClerk();
   const { user: clerkUser } = useUser();
   const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
   const { fetchData, data } = useApi();
@@ -136,7 +138,7 @@ const LogIn = () => {
     );
   };
   const handleLoginGoogle = () => {
-    console.log(Math.random() * 10);
+    signOut();
   };
   if (loading)
     return (
