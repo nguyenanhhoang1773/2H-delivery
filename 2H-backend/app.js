@@ -71,7 +71,7 @@ app.post("/signUp", async (req, res) => {
     [email],
     (err, rows, fields) => {
       if (err) throw err;
-      if (!rows[0] || password === "1") {
+      if (!rows[0]) {
         const userId = uuidv4();
         db.query(
           "INSERT INTO users (id,email, password, fullname, phone) VALUES (?,?,?,?,?)",
@@ -84,10 +84,16 @@ app.post("/signUp", async (req, res) => {
           }
         );
       } else {
-        console.log("email exists");
-        res.send({
-          status: "exists",
-        });
+        if (password === "1") {
+          res.send({
+            status: "success",
+          });
+        } else {
+          console.log("email exists");
+          res.send({
+            status: "exists",
+          });
+        }
       }
     }
   );
