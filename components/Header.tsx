@@ -18,12 +18,12 @@ import * as colors from "@/constants/color";
 import FontistoIcon from "@expo/vector-icons/Fontisto";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { selectQuantity } from "@/redux/features/cart/cartSlice";
+// import { selectQuantity } from "@/redux/features/cart/cartSlice";
 import { router } from "expo-router";
 import { selectUser } from "@/redux/features/user/userSlice";
 const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
   const user = useAppSelector(selectUser);
-  const quantityCart = useAppSelector(selectQuantity);
+  // const quantityCart = useAppSelector(selectQuantity);
   if (isHome)
     return (
       <SafeAreaView
@@ -127,7 +127,7 @@ const Header = ({ isHome, cartRef }: { isHome?: boolean; cartRef?: any }) => {
               size={24}
               name="cart-outline"
             />
-            <Text className="font-NunitoBold ml-1">{quantityCart}</Text>
+            {/* <Text className="font-NunitoBold ml-1">{quantityCart}</Text> */}
           </TouchableOpacity>
         </View>
       </View>

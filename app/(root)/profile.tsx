@@ -41,12 +41,12 @@ const ProfilePage = () => {
         <Text className="text-2xl text-black font-NunitoBold">Hung</Text>
         <Text className="text-2xl font-Nunito text-gray-500">mark.brock@icloud.com</Text>
         <TouchableOpacity className="bg-black px-5 py-4 rounded-full mt-3">
-          <Text className="text-white font-bold">Edit profile</Text>
+          <Text className="text-white font-bold">Sửa hồ sơ</Text>
         </TouchableOpacity>
         </View>
         
-        <Text className="text-lg font-bold text-gray-600 mb-2 ml-4">Chính</Text>
-        <View className="bg-white rounded-lg px-4 mb-4">
+        <Text className="text-lg font-bold text-textPrimary mb-2 ml-4">Chính</Text>
+        <View className="rounded-3xl px-4 mb-4 border border-gray-200" style={styles.bg_category}>
           <TouchableOpacity className="flex-row items-center py-3 border-b border-gray-200">
             <MaterialIcons
                 style={styles.icon}
@@ -80,8 +80,8 @@ const ProfilePage = () => {
           </TouchableOpacity>
         </View>
 
-        <Text className="text-lg font-bold text-gray-600 mb-2 ml-4">Khác</Text>
-        <View className="bg-white rounded-lg px-4 mb-4">
+        <Text className="text-lg font-bold text-textPrimary mb-2 ml-4">Khác</Text>
+        <View className="bg-white rounded-3xl px-4 mb-4 border border-gray-300" style={styles.bg_category}>
           <TouchableOpacity className="flex-row items-center py-3 border-b border-gray-200">
             <MaterialIcons
                 style={styles.icon}
@@ -111,7 +111,7 @@ const ProfilePage = () => {
 
           <TouchableOpacity className="flex-row items-center py-3 border-b border-gray-200">
             <MaterialIcons
-                style={styles.icon}
+                style={styles.icon_logout}
                     color="red"
                     size={26}
                     name="logout"
@@ -129,12 +129,23 @@ const styles = StyleSheet.create({
   icon: {
     padding: 10,
     borderRadius: "100%",
-    backgroundColor: "rgba(0,0,0,0.09)",
+    backgroundColor: "white",
+    color: colors.textPrimary
   },
 
   icon_direction: {
     marginLeft: 12,
     marginTop: 8
   },
+
+  bg_category: {
+    backgroundColor: colors.backgroundGray
+  },
+
+  icon_logout: {
+    backgroundColor: colors.backgroundLogout,
+    padding: 10,
+    borderRadius: "100%",
+  }
 });
 export default ProfilePage;
