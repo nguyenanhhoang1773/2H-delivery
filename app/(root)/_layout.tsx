@@ -12,7 +12,7 @@ import { login, selectIsLogin } from "@/redux/features/user/userSlice";
 import axios from "axios";
 const RootLayout = () => {
   const isLogin = useAppSelector(selectIsLogin);
-  if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;
+  if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;     
   return (
     <Tabs
       screenOptions={{
