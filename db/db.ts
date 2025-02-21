@@ -1,12 +1,13 @@
 import axios from "axios";
 import { router } from "expo-router";
 import { Alert } from "react-native";
+const hostId = process.env.LOCAL_HOST_ID;
 export async function LoginWithEmail(data: {
   email: string;
   password: string;
 }) {
   try {
-    const response = await axios.post("http://192.168.110.238:3000/login", {
+    const response = await axios.post(`${hostId}/login`, {
       email: data.email,
       password: data.password,
     });
@@ -28,7 +29,7 @@ export async function LoginWithEmail(data: {
 }
 export async function LoginWithClerk(clerkUser: any) {
   try {
-    const response = await axios.post("http://192.168.110.238:3000/signUp", {
+    const response = await axios.post(`${hostId}/signUp`, {
       email: clerkUser?.emailAddresses[0].emailAddress,
       password: "1",
       fullname: clerkUser?.fullName,
@@ -36,7 +37,7 @@ export async function LoginWithClerk(clerkUser: any) {
     });
     const { status } = response.data;
     if (status === "success") {
-      const response = await axios.post("http://192.168.110.238:3000/login", {
+      const response = await axios.post(`${hostId}/login`, {
         email: clerkUser?.emailAddresses[0].emailAddress,
         password: "1",
       });
@@ -60,7 +61,7 @@ export async function signUp(account: {
   fullname: string;
 }) {
   try {
-    const response = await axios.post("http://192.168.110.238:3000/signUp", {
+    const response = await axios.post(`${hostId}/signUp`, {
       email: account.email,
       password: account.password,
       fullname: account.fullname,
@@ -68,7 +69,7 @@ export async function signUp(account: {
     });
     const { status, message } = response.data;
     if (status === "success") {
-      const response = await axios.post("http://192.168.110.238:3000/login", {
+      const response = await axios.post(`${hostId}/login`, {
         email: account.email,
         password: account.password,
       });
