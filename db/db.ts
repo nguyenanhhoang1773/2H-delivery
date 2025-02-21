@@ -1,7 +1,7 @@
 import axios from "axios";
 import { router } from "expo-router";
 import { Alert } from "react-native";
-const hostId = process.env.LOCAL_HOST_ID;
+const hostId = process.env.EXPO_PUBLIC_LOCAL_HOST_ID;
 export async function LoginWithEmail(data: {
   email: string;
   password: string;
