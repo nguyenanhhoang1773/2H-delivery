@@ -24,7 +24,7 @@ const CartItem = ({ id }: { id: number }) => {
   };
 
   return (
-    <View className="mt-4 p-3 relative shadow bg-white rounded-xl flex-row items-center">
+    <View className="mx-5 mt-3 p-3 relative shadow bg-white rounded-3xl border border-gray-200 flex-row items-center">
       <Image className="size-28 rounded-xl" source={images.comGa} />
 
       <View className="justify-between flex-1 ml-4">

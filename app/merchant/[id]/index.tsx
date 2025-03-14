@@ -54,7 +54,7 @@ const MerchantPage = () => {
 
       <ScrollView
         bounces={false}
-        className=" bg-white  px-2 rounded-t-[30]"
+        className=" bg-white px-2 rounded-t-[30]"
         removeClippedSubviews
       >
         <View className="flex-1 py-4">
