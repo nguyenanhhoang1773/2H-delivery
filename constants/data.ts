@@ -37,6 +37,42 @@ const foods = [
     star: "4.3",
     merchantSlug: "bunrieucohung",
   },
+  {
+    id: 5,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+  {
+    id: 6,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+  {
+    id: 7,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
+  {
+    id: 8,
+    title: "Bún riêu cô Hưng",
+    type: "Ăn no",
+    source: images.bunRieu,
+    price: "35.000",
+    star: "4.3",
+    merchantSlug: "bunrieucohung",
+  },
 ];
 export const merchants = [
   {

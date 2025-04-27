@@ -20,7 +20,6 @@ import MerchantItem from "@/components/MerchantItem";
 import foods from "@/constants/data";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";
-import * as Location from "expo-location";
 export default function Index() {
   const { user } = useUser();
   console.log(user?.fullName);

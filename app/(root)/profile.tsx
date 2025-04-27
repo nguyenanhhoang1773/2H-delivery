@@ -21,8 +21,8 @@ const ProfilePage = () => {
   const { signOut } = useClerk();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
-  console.log(user.fullname);
-  console.log(user.imgUrl);
+  console.log(user?.fullname);
+  console.log(user?.imgUrl);
   const handleLogOut = async () => {
     console.log("------------------------------");
     await signOut();

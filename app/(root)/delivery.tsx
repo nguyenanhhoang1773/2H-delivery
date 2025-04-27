@@ -76,7 +76,7 @@ const DeliveryPage = () => {
               }}
               strokeWidth={3}
               strokeColor="#0286ff"
-              apikey="AIzaSyCb4LJX5CqACgujgOucKgurNqNI1Y-18sad9U"
+              apikey="AIzaSyD1UK6aaw-F3vxWkJjOCGRul27_6SyE7EM"
             />
             <Marker
               coordinate={{
