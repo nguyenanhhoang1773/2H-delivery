@@ -16,6 +16,8 @@ import cheKhoai from "@/assets/images/cheKhoai.jpg";
 import comGa from "@/assets/images/comGa.jpg";
 import comTam from "@/assets/images/comTam.jpg";
 import daXay from "@/assets/images/daXay.jpg";
+import discountfood from "@/assets/images/discount_food.jpg";
+import freeship from "@/assets/images/freeship.png";
 import goiCuon from "@/assets/images/goiCuon.jpg";
 import huTieu from "@/assets/images/huTieu.jpg";
 import milo from "@/assets/images/milo.jpg";
@@ -63,6 +65,8 @@ export default {
   comGa,
   comTam,
   daXay,
+  discountfood,
+  freeship,
   goiCuon,
   huTieu,
   milo,

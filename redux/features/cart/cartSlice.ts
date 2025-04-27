@@ -11,6 +11,9 @@ const initialState: CartState = {
   items: {},
 };
 
+export const selectQuantity = (state: RootState) =>
+  Object.values(state.cart.items).reduce((sum, qty) => sum + qty, 0);
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
