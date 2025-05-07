@@ -13,6 +13,7 @@ import cheBap from "@/assets/images/cheBap.jpg";
 import cheDuongNhan from "@/assets/images/cheDuongNhan.jpg";
 import cheHat from "@/assets/images/cheHat.jpg";
 import cheKhoai from "@/assets/images/cheKhoai.jpg";
+import coin from "@/assets/images/coin.png"
 import comGa from "@/assets/images/comGa.jpg";
 import comTam from "@/assets/images/comTam.jpg";
 import daXay from "@/assets/images/daXay.jpg";
@@ -62,6 +63,7 @@ export default {
   cheDuongNhan,
   cheHat,
   cheKhoai,
+  coin,
   comGa,
   comTam,
   daXay,

@@ -178,7 +178,7 @@ const CartPage = () => {
           <View className="flex-row justify-between p-3 bg-gray-100 rounded-lg">
             <Text className="text-lg font-semibold">~{selectedPromo}</Text>
             <Text className="text-green-600 bg-yellow-200 px-3 py-1 rounded-full">
-              Mã ưu đãi
+              Mã ưu
             </Text>
           </View>
         </TouchableOpacity>
