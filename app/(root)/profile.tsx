@@ -16,6 +16,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as colors from "@/constants/color";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { ScrollView } from "react-native-gesture-handler";
+import { router } from "expo-router";
 
 const ProfilePage = () => {
   const { signOut } = useClerk();
@@ -62,7 +63,10 @@ const ProfilePage = () => {
             className="rounded-3xl px-4 mb-4 border border-gray-200"
             style={styles.bg_category}
           >
-            <TouchableOpacity className="flex-row items-center py-3 border-b border-gray-200">
+            <TouchableOpacity 
+              className="flex-row items-center py-3 border-b border-gray-200"
+              onPress={() => router.push(`/(root)/myFood`)}
+              >
               <MaterialIcons
                 style={styles.icon}
                 color="white"
@@ -80,7 +84,10 @@ const ProfilePage = () => {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity className="flex-row items-center py-3">
+            <TouchableOpacity 
+              className="flex-row items-center py-3"
+              onPress={() => router.push("/OrderHistory")}
+              >
               <MaterialIcons
                 style={styles.icon}
                 color="white"

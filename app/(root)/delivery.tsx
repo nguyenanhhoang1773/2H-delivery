@@ -3,8 +3,7 @@ import React from "react";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import Header from "@/components/Header";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE, Polyline } from "react-native-maps";
 import Shipper from "@/components/Shipper";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import * as colors from "@/constants/color";
@@ -13,14 +12,18 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Dots from "@/components/Dots";
 import { StatusBar } from "expo-status-bar";
-import images from "@/constants/images";
-import MapViewDirections from "react-native-maps-directions";
+import axios from "axios";
+type LatLng = {
+  latitude: number;
+  longitude: number;
+};
 const DeliveryPage = () => {
   const { id } = useLocalSearchParams();
   const [location, setLocation] = useState<Location.LocationObject | null>(
     null
   );
   const [address, setAddress] = useState<any>(null);
+  const [routeCoords, setRouteCoords] = useState<LatLng[]>([]);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   useEffect(() => {
     async function getCurrentLocation() {
@@ -40,14 +43,38 @@ const DeliveryPage = () => {
     }
     getCurrentLocation();
   }, []);
+  useEffect(() => {
+    const fetchRouting = async (startLocation: any, endLocation: any) => {
+      const url = `https://api.geoapify.com/v1/routing?waypoints=${startLocation.latitude},${startLocation.longitude}|${endLocation.latitude},${endLocation.longitude}&mode=drive&apiKey=5bc79942863c4b7eb2d7136014c50c20`;
+      console.log(url);
+      console.log("----------------");
+      try {
+        const response = await axios.get(url);
+        const features = response.data.features;
+        if (features.length > 0) {
+          const geometry = features[0].geometry;
+          const coordinates = geometry.coordinates[0].map((coord: any) => ({
+            latitude: coord[1],
+            longitude: coord[0],
+          }));
+          console.log("coordinates:", coordinates);
 
+          setRouteCoords(coordinates);
+        }
+      } catch (error) {
+        console.error("Error fetching route:", error);
+      }
+    };
+    fetchRouting(location?.coords, {
+      latitude: 15.974795,
+      longitude: 108.254878,
+    });
+  }, [location]);
   let text = "Waiting...";
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
-    console.log(location.coords.latitude);
-    console.log(location.coords.longitude);
 
     // const { latitudeDelta, longitudeDelta } = calculateDelta(location.coords.latitude);
   }
@@ -65,19 +92,13 @@ const DeliveryPage = () => {
               longitudeDelta: 0.01,
             }}
           >
-            <MapViewDirections
-              origin={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-              }}
-              destination={{
-                latitude: 15.97556809564408,
-                longitude: 108.25323803847986,
-              }}
-              strokeWidth={3}
-              strokeColor="#0286ff"
-              apikey="AIzaSyD1UK6aaw-F3vxWkJjOCGRul27_6SyE7EM"
-            />
+            {routeCoords.length > 0 && (
+              <Polyline
+                coordinates={routeCoords}
+                strokeColor="#1E90FF" // Màu xanh dương
+                strokeWidth={4}
+              />
+            )}
             <Marker
               coordinate={{
                 latitude: location.coords.latitude,
