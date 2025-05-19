@@ -18,6 +18,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { ScrollView } from "react-native-gesture-handler";
 import { router } from "expo-router";
 
+
 const ProfilePage = () => {
   const { signOut } = useClerk();
   const dispatch = useAppDispatch();

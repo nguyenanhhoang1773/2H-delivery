@@ -14,7 +14,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
     <View className="bg-white p-4 mx-2 rounded-lg">
       <View className="flex-row justify-between">
         <View className="flex-row">
-          <View className="px-2 rounded-md mr-2" style={{ backgroundColor: "#f53d2d" }}>
+          <View className="px-2 rounded-md mr-2" style={{ backgroundColor: colors.primary }}>
             <Text className="text-white text-sm font-NunitoBold my-auto">Yêu thích</Text>
           </View>
 
@@ -22,7 +22,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         </View>
 
         <View>
-          <Text className="font-NunitoMedium text-sm my-auto" style={{ color: "#f53d2d" }}>Hoàn thành</Text>
+          <Text className="font-NunitoMedium text-sm my-auto" style={{ color: colors.primary }}>Hoàn thành</Text>
         </View>
       </View>
 
@@ -52,7 +52,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
             <Text className="text-gray-400 line-through text-sm mr-2 font-NunitoMedium">
               {order.originalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </Text>
-            <Text className="text-red-500 font-NunitoSemiBold">
+            <Text className="font-NunitoSemiBold" style={{ color: colors.primary }}>
               {order.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </Text>
           </View>
@@ -60,7 +60,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       </View>
 
       <Text className="text-right font-NunitoSemiBold">
-        Tổng số tiền (1 sản phẩm): <Text className="text-red-500 font-NunitoBold">
+        Tổng số tiền (1 sản phẩm): <Text className=" font-NunitoBold" style={{ color: colors.primary }}>
           {order.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
         </Text>
       </Text>
@@ -88,7 +88,7 @@ const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
         <TouchableOpacity className="border border-gray-300 px-3 py-2 rounded-md mr-2">
           <Text className="text-base font-NunitoMedium">Trả hàng/Hoàn tiền</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="bg-red-500 border border-red-500 px-3 py-2 rounded-md">
+        <TouchableOpacity className="border px-3 py-2 rounded-md" style={{ backgroundColor: colors.primary, borderColor: colors.primary }}>
           <Text className="text-white text-base font-NunitoMedium">Đánh giá</Text>
         </TouchableOpacity>
       </View>

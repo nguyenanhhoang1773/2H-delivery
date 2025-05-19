@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import OrderCard from "../../components/OrderCart";
+import * as colors from "@/constants/color";
 
 const orders = [
   {
@@ -86,18 +87,18 @@ const OrderList = () => {
       <View className="flex-row items-center justify-between py-2">
         <View className="flex-row">
         <TouchableOpacity onPress={() => navigation.goBack()} className="p-1 ml-2">
-          <AntDesign name="arrowleft" size={24} color="#f53d2d" />
+          <AntDesign name="arrowleft" size={24} style={{color: colors.primary}} />
         </TouchableOpacity>
         <Text className="text-2xl font-NunitoBold ml-2">Lịch sử đơn hàng</Text>
         </View>
 
         <View className="flex-row">
           <TouchableOpacity className="px-3">
-            <AntDesign name="search1" size={24} color="#f53d2d"/>
+            <AntDesign name="search1" size={24} style={{color: colors.primary}}/>
           </TouchableOpacity>
 
           <TouchableOpacity className="pr-3">
-            <Ionicons name="chatbubbles-outline" size={24} color="#f53d2d" />
+            <Ionicons name="chatbubbles-outline" size={24} style={{color: colors.primary}} />
           </TouchableOpacity>
         </View>
       </View>
