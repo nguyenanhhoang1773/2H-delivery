@@ -68,6 +68,26 @@ const RootLayout = () => {
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Ionicons
+                color={colors.primary}
+                size={30}
+                name="chatbubbles"
+              />
+            ) : (
+              <Ionicons
+                color={colors.textPrimary}
+                size={30}
+                name="chatbubbles-outline"
+              />
+            ),
+          title: "Chat",
+        }}
+        name="chat"
+      />
+      <Tabs.Screen
+        options={{
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Ionicons
                 size={30}
                 color={colors.primary}
                 name="newspaper"

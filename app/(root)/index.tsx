@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Modal,
 } from "react-native";
 import { Link } from "expo-router";
 import { useUser, useClerk } from "@clerk/clerk-expo";
@@ -20,6 +21,12 @@ import MerchantItem from "@/components/MerchantItem";
 import foods from "@/constants/data";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";
+<<<<<<< HEAD
+=======
+import * as Location from "expo-location";
+// import ChatWootView from "@/components/Chatwootview";
+
+>>>>>>> adc5b5e596144517c58d1539dee2faa2cce2f3ab
 export default function Index() {
   const { user } = useUser();
   console.log(user?.fullName);
@@ -28,6 +35,7 @@ export default function Index() {
     <View className="flex-1 bg-backgroundPrimary">
       <StatusBar style="light" />
       <Header isHome />
+
       <ScrollView
         bounces={false}
         contentContainerClassName="pt-4 pb-6"
