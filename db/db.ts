@@ -1,8 +1,7 @@
-import axios from "axios";
-const hostId = process.env.EXPO_PUBLIC_LOCAL_HOST_ID!;
+import axios from "@/axios";
 export async function LoginWithClerk(clerkUser: any) {
   try {
-    const response = await axios.post(`${hostId}/login`, {
+    const response = await axios.post(`/login`, {
       email: clerkUser?.emailAddresses[0].emailAddress,
       fullname: clerkUser?.fullName,
       phone: "1",

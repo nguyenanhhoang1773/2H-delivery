@@ -9,10 +9,9 @@ import * as colors from "@/constants/color";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { login, selectIsLogin } from "@/redux/features/user/userSlice";
-import axios from "axios";
 const RootLayout = () => {
   const isLogin = useAppSelector(selectIsLogin);
-  if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;     
+  if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;
   return (
     <Tabs
       screenOptions={{

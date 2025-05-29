@@ -13,8 +13,11 @@ const login = async (req, res) => {
         lastLogin: Date.now(),
       });
       await newUser.save();
+      console.log("success");
       res.status(201).json({ user: newUser });
     } else {
+      console.log("false");
+
       res.status(201).json({ user: user });
     }
   } catch (err) {

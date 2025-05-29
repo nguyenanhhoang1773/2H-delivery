@@ -5,8 +5,10 @@ import {
   Image,
   StyleSheet,
   Switch,
+  Modal,
+  Button,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useClerk } from "@clerk/clerk-expo";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
@@ -15,11 +17,39 @@ import images from "@/constants/images";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import * as colors from "@/constants/color";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { router } from "expo-router";
-
-
+import axios from "@/axios";
+const hostId = process.env.EXPO_PUBLIC_LOCAL_HOST_ID;
 const ProfilePage = () => {
+  const [name, setName] = useState("");
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
+  const [phone, setPhone] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
+  const handleAdd = async () => {
+    try {
+      const newEatery = {
+        name,
+        coordinates: {
+          lat: parseFloat(lat),
+          lng: parseFloat(lng),
+        },
+        phone,
+        imageUrl,
+      };
+
+      await axios.post("/addEatery", newEatery);
+      alert("Eatery added successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add eatery.");
+    }
+  };
   const { signOut } = useClerk();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
@@ -35,12 +65,74 @@ const ProfilePage = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      <Button
+        title="Add New Eatery"
+        onPress={openModal}
+      />
       {/* <TouchableOpacity
         className="p-5 bg-backgroundPrimary"
         onPress={handleLogOut}
       >
         <Text className="text-2xl text-white font-NunitoBold">Đăng xuất</Text>
       </TouchableOpacity> */}
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <Text style={styles.title}>Add Eatery</Text>
+            <TextInput
+              placeholder="Name"
+              style={styles.input}
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              placeholder="Latitude"
+              style={styles.input}
+              value={lat}
+              onChangeText={setLat}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Longitude"
+              style={styles.input}
+              value={lng}
+              onChangeText={setLng}
+              keyboardType="numeric"
+            />
+            <TextInput
+              placeholder="Phone"
+              style={styles.input}
+              value={phone}
+              onChangeText={setPhone}
+            />
+            <TextInput
+              placeholder="Image URL"
+              style={styles.input}
+              value={imageUrl}
+              onChangeText={setImageUrl}
+            />
+
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={handleAdd}
+              >
+                <Text style={styles.buttonText}>Add</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.cancelButton]}
+                onPress={closeModal}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
       <ScrollView>
         <View className="flex-1 bg-white p-5">
           <View className="items-center mb-5 mt-4">
@@ -64,10 +156,10 @@ const ProfilePage = () => {
             className="rounded-3xl px-4 mb-4 border border-gray-200"
             style={styles.bg_category}
           >
-            <TouchableOpacity 
+            <TouchableOpacity
               className="flex-row items-center py-3 border-b border-gray-200"
               onPress={() => router.push(`/(root)/myFood`)}
-              >
+            >
               <MaterialIcons
                 style={styles.icon}
                 color="white"
@@ -85,10 +177,10 @@ const ProfilePage = () => {
               />
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               className="flex-row items-center py-3"
               onPress={() => router.push("/OrderHistory")}
-              >
+            >
               <MaterialIcons
                 style={styles.icon}
                 color="white"
@@ -190,6 +282,49 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundLogout,
     padding: 10,
     borderRadius: "100%",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.4)",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 12,
+    padding: 20,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    marginBottom: 12,
+    padding: 8,
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 15,
+  },
+  button: {
+    padding: 10,
+    backgroundColor: "#2196F3",
+    borderRadius: 6,
+    width: "40%",
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#f44336",
+  },
+  buttonText: {
+    color: "white",
+    fontWeight: "bold",
   },
 });
 export default ProfilePage;

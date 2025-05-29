@@ -1,11 +1,16 @@
 import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import ChatwootView from "@/components/ChatwootView";
-
-
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 const Chat = () => {
+  const { top } = useSafeAreaInsets();
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { paddingTop: top, backgroundColor: "white" }]}
+    >
       <View style={styles.chatContainer}>
         <ChatwootView />
       </View>
