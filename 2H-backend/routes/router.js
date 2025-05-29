@@ -6,4 +6,8 @@ const eateryController = require("../controllers/eateryController");
 // router.get("/", foodController.getAllFoods);
 router.post("/login", userController.login);
 router.post("/addEatery", eateryController.addEatery);
+router.post("/addFavoriteEatery", eateryController.addFavoriteEatery);
+router.get("/getAllEatery", eateryController.getAllEatery);
+router.get("/getUserInfor", userController.getUserInfor);
+router.get("/getAllFavoriteEatery", eateryController.getAllFavoriteEatery);
 module.exports = router;

@@ -9,7 +9,7 @@ import {
   TextInput,
 } from "react-native";
 import React, { useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "@/components/Header";
 import images from "@/constants/images";
 import Fontisto from "@expo/vector-icons/Fontisto";
@@ -30,12 +30,12 @@ import {
 } from "@gorhom/bottom-sheet";
 import dimension from "@/constants/constant";
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import Entypo from "@expo/vector-icons/Entypo";
 import Comment from "@/components/Comment";
 import CustomBackdrop from "@/lib/Backdrop";
 const MerchantPage = () => {
   const { user } = useUser();
-  const { id } = useLocalSearchParams();
+  const { id, source, title, star } = useLocalSearchParams();
+
   const [showModal, setShowModal] = useState(false);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const cartRef = useRef<View>(null);
@@ -61,20 +61,21 @@ const MerchantPage = () => {
           <Image
             style={{ height: (dimension.height * 2) / 7 }}
             className="w-full px-2  rounded-[30]"
-            source={images.comGa}
+            source={{ uri: source }}
           />
           <View className=" mt-4">
             <View className="px-5">
               <View className="flex-row items-center justify-between">
-                <Text className="font-NunitoBold text-3xl">
-                  Cơm gà Gia Vĩnh
-                </Text>
-                <EvilIcons size={36} name="heart" />
+                <Text className="font-NunitoBold text-3xl">{title}</Text>
+                <EvilIcons
+                  size={36}
+                  name="heart"
+                />
               </View>
               <View className="flex-row items-center">
                 <Text className="text-textPrimary text-lg">95 đánh giá</Text>
                 <View className="h-5 bg-secondBg w-[1] mx-2"></View>
-                <Text className=" text-lg font-NunitoBold">4.9</Text>
+                <Text className=" text-lg font-NunitoBold">{star}</Text>
                 <MaterialIcons
                   className="ml-1"
                   size={20}
@@ -212,7 +213,10 @@ const MerchantPage = () => {
               className="w-full px-4 py-4 border border-textSecond rounded-xl mt-2"
               placeholder="Để lại bình luận của bạn"
             />
-            <ScrollView showsVerticalScrollIndicator={false} className="">
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              className=""
+            >
               <Comment />
               <Comment />
               <Comment />

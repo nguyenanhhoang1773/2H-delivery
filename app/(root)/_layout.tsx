@@ -8,10 +8,35 @@ import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as colors from "@/constants/color";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { login, selectIsLogin } from "@/redux/features/user/userSlice";
+import { addId, login, selectIsLogin } from "@/redux/features/user/userSlice";
+import { selectUser } from "@/redux/features/user/userSlice";
+import axios from "@/axios";
+import { Eatery } from "@/type/type";
+
 const RootLayout = () => {
+  const user = useAppSelector(selectUser);
+  const dispatch = useAppDispatch();
   const isLogin = useAppSelector(selectIsLogin);
   if (!isLogin) return <Redirect href={"/(auth)/LogIn"} />;
+  useEffect(() => {
+    console.log(user.email);
+    axios
+      .get("/getUserInfor", {
+        params: {
+          email: user.email,
+        },
+      })
+      .then(function (response) {
+        dispatch(addId(response.data._id));
+        console.log("response.data._id:", response.data._id);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
+  }, []);
   return (
     <Tabs
       screenOptions={{

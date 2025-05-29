@@ -1,4 +1,5 @@
 import axios from "@/axios";
+import { user } from "@/type/type";
 export async function LoginWithClerk(clerkUser: any) {
   try {
     const response = await axios.post(`/login`, {

@@ -10,6 +10,7 @@ const login = async (req, res) => {
         name: fullname,
         address: "notUpdated",
         phone: "notUpdated",
+        favorites: [],
         lastLogin: Date.now(),
       });
       await newUser.save();
@@ -24,7 +25,23 @@ const login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+const getUserInfor = async (req, res) => {
+  try {
+    const { email } = req.query; // hoặc req.body tùy cách bạn gửi
+    console.log("email:", email);
 
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 module.exports = {
   login,
+  getUserInfor,
 };

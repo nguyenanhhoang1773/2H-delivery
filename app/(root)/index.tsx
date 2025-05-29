@@ -22,12 +22,25 @@ import foods from "@/constants/data";
 import Header from "@/components/Header";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
+import { Eatery } from "@/type/type";
+import axios from "@/axios";
 // import ChatWootView from "@/components/Chatwootview";
 
 export default function Index() {
   const { user } = useUser();
+  const [eateries, setEateries] = useState<Eatery[]>([]);
   console.log(user?.fullName);
-
+  useEffect(() => {
+    axios
+      .get("/getAllEatery")
+      .then(function (response) {
+        setEateries(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {});
+  }, []);
   return (
     <View className="flex-1 bg-backgroundPrimary">
       <StatusBar style="light" />
@@ -68,17 +81,16 @@ export default function Index() {
             </TouchableOpacity>
           </View>
           <View className="mt-3">
-            {foods.map((food, index) => (
-              <MerchantItem
-                key={food.id}
-                id={food.id}
-                title={food.title}
-                source={food.source}
-                price={food.price}
-                type={food.type}
-                star={food.star}
-              />
-            ))}
+            {eateries &&
+              eateries.map((food, index) => (
+                <MerchantItem
+                  key={food.name}
+                  id={food._id}
+                  title={food.name}
+                  source={food.imageUrl}
+                  star={food.rating}
+                />
+              ))}
           </View>
         </View>
       </ScrollView>

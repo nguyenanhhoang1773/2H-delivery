@@ -13,7 +13,7 @@ import cheBap from "@/assets/images/cheBap.jpg";
 import cheDuongNhan from "@/assets/images/cheDuongNhan.jpg";
 import cheHat from "@/assets/images/cheHat.jpg";
 import cheKhoai from "@/assets/images/cheKhoai.jpg";
-import coin from "@/assets/images/coin.png"
+import coin from "@/assets/images/coin.png";
 import comGa from "@/assets/images/comGa.jpg";
 import comTam from "@/assets/images/comTam.jpg";
 import daXay from "@/assets/images/daXay.jpg";
@@ -40,7 +40,11 @@ import avatar from "@/assets/images/avatar.jpg";
 import location from "@/assets/images/location.png";
 import user from "@/assets/images/user.png";
 import shipper from "@/assets/images/shipper.png";
+import shipperv2 from "@/assets/images/shipperv2.png";
+import eatery from "@/assets/images/eatery.png";
 export default {
+  eatery,
+  shipperv2,
   user,
   shipper,
   location,

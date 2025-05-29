@@ -24,10 +24,9 @@ import * as Linking from "expo-linking";
 import { useOAuth, SignedOut, useUser } from "@clerk/clerk-expo";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
-import axios from "axios";
 import { useAppDispatch } from "@/redux/hooks";
 import { login } from "@/redux/features/user/userSlice";
-import { LoginWithClerk, LoginWithEmail } from "@/db/db";
+import { LoginWithClerk } from "@/db/db";
 import { useClerk } from "@clerk/clerk-expo";
 import { useApi } from "@/db/useApi";
 const schema = yup.object().shape({
@@ -75,6 +74,7 @@ const LogIn = () => {
       if (clerkUser) {
         dispatch(
           login({
+            email: data?.email,
             fullname: data?.fullname,
             id: data?.id,
             phone: data?.phone,
@@ -90,6 +90,7 @@ const LogIn = () => {
         console.log("login with email");
         dispatch(
           login({
+            email: data?.email,
             fullname: data?.fullname,
             id: data?.id,
             phone: data?.phone,
@@ -128,9 +129,6 @@ const LogIn = () => {
     },
     resolver: yupResolver(schema),
   });
-  const onSubmit = async (user: { email: string; password: string }) => {
-    await fetchData(LoginWithEmail(user));
-  };
   const onSubmitError = () => {
     Alert.alert(
       "Đăng nhập không thành công",
@@ -247,10 +245,7 @@ const LogIn = () => {
                   </Text>
                 )}
                 <View className="px-10 mt-2">
-                  <TouchableOpacity
-                    onPress={handleSubmit(onSubmit, onSubmitError)}
-                    className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center"
-                  >
+                  <TouchableOpacity className="w-full py-5 bg-primary rounded-2xl mt-8  justify-center items-center">
                     <Text className="text-2xl font-NunitoSemiBold">
                       Đăng nhập
                     </Text>
