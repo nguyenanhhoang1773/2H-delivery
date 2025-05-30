@@ -8,7 +8,7 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Header from "@/components/Header";
 import images from "@/constants/images";
@@ -32,21 +32,49 @@ import dimension from "@/constants/constant";
 import { useClerk, useUser } from "@clerk/clerk-expo";
 import Comment from "@/components/Comment";
 import CustomBackdrop from "@/lib/Backdrop";
+import axios from "@/axios";
+
 const MerchantPage = () => {
   const { user } = useUser();
   const { id, source, title, star } = useLocalSearchParams();
-
+  const [foods, setFoods] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [food, setFood] = useState({});
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
   const cartRef = useRef<View>(null);
   // callbacks
-  const handlePresentModalPress = useCallback(() => {
+  const handlePresentModalPress = useCallback((id, name, source, price) => {
     bottomSheetModalRef.current?.present();
+    console.log(id, name, source, price);
+    setFood({
+      id: id,
+      name: name,
+      source: source,
+      price: price,
+    });
     setShowModal(true);
   }, []);
   const handleSheetChanges = useCallback((index: number) => {
     console.log("handleSheetChanges", index);
     if (index < 0) setShowModal(false);
+  }, []);
+  useEffect(() => {
+    axios
+      .get("/getAllFoodOfEatery", {
+        params: {
+          EateryId: id,
+        },
+      })
+      .then(function (response) {
+        console.log(response.data);
+        setFoods(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
   }, []);
   return (
     <View className="bg-backgroundPrimary relative flex-1">
@@ -132,31 +160,25 @@ const MerchantPage = () => {
                 </TouchableOpacity>
               </View>
               <View>
-                <FoodItem
-                  cartRef={cartRef}
-                  id={1}
-                  handlePress={handlePresentModalPress}
-                />
-                <FoodItem
-                  cartRef={cartRef}
-                  id={1}
-                  handlePress={handlePresentModalPress}
-                />
-                <FoodItem
-                  cartRef={cartRef}
-                  id={1}
-                  handlePress={handlePresentModalPress}
-                />
-                <FoodItem
-                  cartRef={cartRef}
-                  id={1}
-                  handlePress={handlePresentModalPress}
-                />
-                <FoodItem
-                  cartRef={cartRef}
-                  id={1}
-                  handlePress={handlePresentModalPress}
-                />
+                {foods.length > 0 &&
+                  foods.map((item) => (
+                    <FoodItem
+                      key={item._id}
+                      id={item._id}
+                      source={item["Image URL"]}
+                      name={item.Name}
+                      price={item.Price}
+                      cartRef={cartRef}
+                      handlePress={() => {
+                        handlePresentModalPress(
+                          item._id,
+                          item.Name,
+                          item["Image URL"],
+                          item.Price
+                        );
+                      }}
+                    />
+                  ))}
               </View>
             </View>
           </View>
@@ -180,13 +202,11 @@ const MerchantPage = () => {
         >
           <View className="flex-1">
             <Image
-              source={images.banhMi}
+              source={{ uri: food.source }}
               className="w-full h-[250px] rounded-t-2xl"
             />
             <View className="p-5  border-b  border-slate-100 ">
-              <Text className="font-NunitoBold text-3xl ">
-                Bánh mì đặc biệt
-              </Text>
+              <Text className="font-NunitoBold text-3xl ">{food.name}</Text>
               <Text className="font-NunitoBold text-xl text-textPrimary ">
                 3,2k đã bán
               </Text>
@@ -195,7 +215,7 @@ const MerchantPage = () => {
                   style={{ color: colors.primary }}
                   className="text-2xl  font-NunitoBold"
                 >
-                  30.000
+                  đ{food.price}
                 </Text>
                 <View className="flex-row items-center">
                   <AntDesign

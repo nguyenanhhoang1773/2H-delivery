@@ -4,9 +4,9 @@ import images from "@/constants/images";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as Linking from "expo-linking";
-const Shipper = () => {
+const Shipper = ({ name, phone }: { name: string; phone: string }) => {
   const handleMakeCall = () => {
-    Linking.openURL("tel:0375788434").catch((err) => {
+    Linking.openURL(`tel:${phone}`).catch((err) => {
       console.error("Failed to make a call", err);
     });
   };
@@ -17,9 +17,7 @@ const Shipper = () => {
         source={images.avatar}
       />
       <View className="justify-center ml-2 flex-1">
-        <Text className="text-xl text-white font-NunitoBold">
-          Nguyễn Sơn Tùng
-        </Text>
+        <Text className="text-xl text-white font-NunitoBold">{name}</Text>
         <Text className="text-lg text-textPrimary font-NunitoBold">
           Shipper
         </Text>

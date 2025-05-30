@@ -65,9 +65,30 @@ const getAllFavoriteEatery = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+const getEateryCoordinates = async (req, res) => {
+  try {
+    const { eateryId } = req.body;
+
+    const eatery = await Eatery.findById(eateryId);
+    console.log("eatery.lat:", eatery.lat);
+    if (!eatery) {
+      return res.status(404).json({ message: "Eatery not found" });
+    }
+
+    return res.status(200).json({
+      lat: eatery.lat,
+      lng: eatery.lng,
+    });
+  } catch (error) {
+    console.error("Error getting eatery coordinates:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 module.exports = {
   addEatery,
   getAllEatery,
   addFavoriteEatery,
   getAllFavoriteEatery,
+  getEateryCoordinates,
 };

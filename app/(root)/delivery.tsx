@@ -26,10 +26,24 @@ import images from "@/constants/images";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { selectUser } from "@/redux/features/user/userSlice";
 import getcoords from "@/geoapify/geoapify";
+import axiosv2 from "@/axios";
+
 type LatLng = {
   latitude: number;
   longitude: number;
 };
+interface Shipper {
+  _id?: string; // nếu lấy từ MongoDB sẽ có _id
+  name: string;
+  phone: string;
+  imageUrl?: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
+  isAvailable: boolean;
+  lastActive: Date;
+}
 const DeliveryPage = () => {
   const { id } = useLocalSearchParams();
   const [location, setLocation] = useState<Location.LocationObject | null>(
@@ -45,6 +59,8 @@ const DeliveryPage = () => {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [step, setStep] = useState(1);
   const [modalVisible, setModalVisible] = useState(false);
+  const [shipper, setShipper] = useState<Shipper | {}>({});
+
   useEffect(() => {
     async function getCurrentLocation() {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -138,6 +154,23 @@ const DeliveryPage = () => {
       longitude: 108.254878,
     });
   }, [location]);
+  useEffect(() => {
+    axiosv2
+      .get("/getAvailableShipper")
+      .then(function (response) {
+        console.log(response.data);
+        setShipper(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(function () {
+        // always executed
+      });
+  }, []);
+  useEffect(() => {
+    console.log("shipper:", shipper);
+  }, [shipper]);
   let text = "Waiting...";
   if (errorMsg) {
     text = errorMsg;
@@ -171,7 +204,19 @@ const DeliveryPage = () => {
                 </Text>
                 <TouchableOpacity
                   className="mt-4"
-                  onPress={() => setModalVisible(!modalVisible)}
+                  onPress={() => {
+                    axiosv2
+                      .post("/setShipperAvailable", {
+                        shipperId: shipper._id,
+                      })
+                      .then(function (response) {
+                        console.log(response);
+                      })
+                      .catch(function (error) {
+                        console.log(error);
+                      });
+                    setModalVisible(!modalVisible);
+                  }}
                 >
                   <AntDesign
                     size={40}
@@ -285,7 +330,12 @@ const DeliveryPage = () => {
                   name="checkcircle"
                 />
               </View>
-              <Shipper />
+              {shipper.name && (
+                <Shipper
+                  name={shipper.name}
+                  phone={shipper.phone}
+                />
+              )}
             </View>
           </MapView>
         )}

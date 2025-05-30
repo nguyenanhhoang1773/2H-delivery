@@ -16,7 +16,7 @@ import React, {
   useState,
 } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { actions } from "@/redux/features/cart/cartSlice";
 import Entypo from "@expo/vector-icons/Entypo";
 import Animated, {
@@ -28,17 +28,28 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 import { Portal } from "@gorhom/portal";
+import axios from "@/axios";
+import { selectUser } from "@/redux/features/user/userSlice";
+
 const FoodItem = ({
-  handlePress,
   id,
+  source,
+  name,
+  price,
+  handlePress,
   isExist = false,
   cartRef,
 }: {
+  id: string;
+  source: string;
+  name: string;
+  price: number;
   handlePress: any;
-  id: number;
   isExist?: boolean;
   cartRef: RefObject<View>;
 }) => {
+  const user = useAppSelector(selectUser);
+
   const [mounted, setMounted] = useState(false);
   const imgRef = useRef<Image>(null);
   const width = useSharedValue(20);
@@ -50,6 +61,18 @@ const FoodItem = ({
   const handleAddCart = () => {
     setQuantity((prev) => ++prev);
     dispatch(actions.addCartItems(1));
+    axios
+      .post("/addToCart", {
+        userId: user.id,
+        foodId: id,
+        quantity: 1,
+      })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
     showControlBtn();
   };
   useEffect(() => {
@@ -101,20 +124,20 @@ const FoodItem = ({
         <Image
           ref={imgRef}
           className="size-20 rounded-xl"
-          source={images.comGa}
+          source={{ uri: source }}
         />
         {mounted && (
           <Portal>
             <Animated.Image
               style={imgStyle}
               className="size-20 rounded-xl absolute  left-3"
-              source={images.comGa}
+              source={{ uri: source }}
             />
           </Portal>
         )}
-        <View className="justify-between ml-2 flex-1">
+        <View className="justify-between ml-3 flex-1">
           <View className="">
-            <Text className="font-NunitoBold text-xl">Cơm đùi gà lớn</Text>
+            <Text className="font-NunitoBold text-xl">{name}</Text>
             <Text className="font-NunitoBold text-textPrimary text-lg">
               108 đã bán
             </Text>
@@ -123,7 +146,7 @@ const FoodItem = ({
             style={{ color: colors.primary }}
             className="text-xl font-NunitoSemiBold"
           >
-            đ50.000
+            đ{price}
           </Text>
         </View>
         {quantity < 1 ? (
@@ -131,7 +154,10 @@ const FoodItem = ({
             onPress={handleAddCart}
             className="items-center justify-center bg-thirdBg p-2 rounded-full"
           >
-            <Entypo size={24} name="plus" />
+            <Entypo
+              size={24}
+              name="plus"
+            />
           </TouchableOpacity>
         ) : (
           <View className="items-center flex-row justify-center">
@@ -147,7 +173,10 @@ const FoodItem = ({
                 }}
                 className="items-center justify-center pl-2 py-2   rounded-l-full"
               >
-                <Entypo size={24} name="minus" />
+                <Entypo
+                  size={24}
+                  name="minus"
+                />
               </TouchableOpacity>
               <Text
                 className="mx-2 py-2 text-textPrimary
@@ -164,7 +193,10 @@ const FoodItem = ({
                 }}
                 className="items-center justify-center  py-2 pr-2  "
               >
-                <Entypo size={24} name="plus" />
+                <Entypo
+                  size={24}
+                  name="plus"
+                />
               </TouchableOpacity>
             </View>
           </View>
